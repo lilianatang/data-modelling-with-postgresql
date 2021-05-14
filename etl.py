@@ -2,6 +2,8 @@ import os
 import glob
 import psycopg2
 import pandas as pd
+import json
+import datetime
 from sql_queries import *
 
 
@@ -20,25 +22,25 @@ def process_song_file(cur, filepath):
 
 def process_log_file(cur, filepath):
     # open log file
-    df = 
-
+    df = pd.read_json(filepath, lines=True) #filepath format must be: r'..\file.jason'
     # filter by NextSong action
-    df = 
-
+    df = df[df["page"] == "NextSong"]
     # convert timestamp column to datetime
-    t = 
-    
+    t = pd.to_datetime(df["ts"])
     # insert time data records
-    time_data = 
-    column_labels = 
-    time_df = 
+    time_data = list(zip(df["ts"], t.dt.hour, t.dt.day, t.dt.week, t.dt.month, t.dt.year, t.dt.weekday))
+    column_labels = ['start_time', 'hour', 'day', 'week', 'month', 'year', 'weekday']
+    time_df = pd.DataFrame(time_data, columns = column_labels)
 
     for i, row in time_df.iterrows():
         cur.execute(time_table_insert, list(row))
 
     # load user table
-    user_df = 
-
+    user_column_labels = ['user_id', 'first_name', 'last_name', 'gender', 'level']
+    user_data = list(zip(df["userId"], df["firstName"], df["lastName"], df["gender"],  df["level"]))
+    user_df = pd.DataFrame(user_data, columns = user_column_labels)
+    # remove duplication
+    user_df.drop_duplicates(keep="first", inplace=True)
     # insert user records
     for i, row in user_df.iterrows():
         cur.execute(user_table_insert, row)

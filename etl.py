@@ -21,11 +21,11 @@ def process_song_file(cur, filepath):
     # open song file
     df = pd.read_json(filepath, lines=True)
     # insert song record
-    song_data = (df[['song_id', 'title', 'artist_id', 'year', 'duration']].values).tolist()
+    song_data = df[['song_id', 'title', 'year', 'duration', 'artist_id']].values[0]
     cur.execute(song_table_insert, song_data)
     
     # insert artist record
-    artist_data = (df[['artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude']].values).tolist()
+    artist_data = df[['artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude']].values[0]
     cur.execute(artist_table_insert, artist_data)
 
 
@@ -37,7 +37,7 @@ def process_log_file(cur, filepath):
     # convert timestamp column to datetime
     t = pd.to_datetime(df["ts"])
     # insert time data records
-    time_data = list(zip(df["ts"], t.dt.hour, t.dt.day, t.dt.week, t.dt.month, t.dt.year, t.dt.weekday))
+    time_data = list(zip(df["ts"], t.dt.hour, t.dt.day, t.dt.isocalendar().week, t.dt.month, t.dt.year, t.dt.weekday))
     column_labels = ['start_time', 'hour', 'day', 'week', 'month', 'year', 'weekday']
     time_df = pd.DataFrame(time_data, columns = column_labels)
 

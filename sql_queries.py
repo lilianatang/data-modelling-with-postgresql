@@ -11,26 +11,13 @@ time_table_drop = "DROP TABLE IF EXISTS time;"
 songplay_table_create = (
     """
     CREATE TABLE IF NOT EXISTS songplays (
-        songplay_id int GENERATED ALWAYS AS IDENTITY,
+        songplay_id int,
         session_id int NOT NULL,
         location varchar NOT NULL,
         user_agent varchar NOT NULL,
         start_time timestamp,
         user_id int,
-        artist_id varchar,
-        PRIMARY KEY(songplay_id),
-        CONSTRAINT fk_time
-            FOREIGN KEY (start_time)
-                REFERENCES time (start_time)
-                ON UPDATE CASCADE ON DELETE CASCADE,
-        CONSTRAINT fk_user
-            FOREIGN KEY (user_id)
-                REFERENCES users (user_id)
-                ON UPDATE CASCADE ON DELETE CASCADE,
-        CONSTRAINT fk_artist
-            FOREIGN KEY (artist_id)
-                REFERENCES artists (artist_id)
-                ON UPDATE CASCADE ON DELETE CASCADE
+        artist_id varchar
     );    
     """
 )
@@ -38,12 +25,11 @@ songplay_table_create = (
 user_table_create = (
     """
     CREATE TABLE IF NOT EXISTS users (
-        user_id int GENERATED ALWAYS AS IDENTITY,
+        user_id int,
         first_name varchar NOT NULL,
         last_name varchar NOT NULL,
         gender varchar NOT NULL,
-        level varchar NOT NULL,
-        PRIMARY KEY(user_id)
+        level varchar NOT NULL
     );    
     """
 )
@@ -55,12 +41,7 @@ song_table_create = (
         title varchar NOT NULL,
         year int NOT NULL,
         duration numeric NOT NULL,
-        artist_id varchar,
-        PRIMARY KEY(song_id),
-        CONSTRAINT fk_artist
-            FOREIGN KEY (artist_id)
-                REFERENCES artists (artist_id)
-                ON UPDATE CASCADE ON DELETE CASCADE
+        artist_id varchar
     );
     """
 )
@@ -72,8 +53,7 @@ artist_table_create = (
         name varchar NOT NULL,
         location varchar,
         latitude numeric,
-        longitude numeric,
-        PRIMARY KEY(artist_id)
+        longitude numeric
     );    
     """
 )
@@ -81,14 +61,13 @@ artist_table_create = (
 time_table_create = (
     """
     CREATE TABLE IF NOT EXISTS time (
-        start_time timestamp,
+        start_time bigint,
         hour int NOT NULL,
         day int NOT NULL,
         week int NOT NULL,
         month int NOT NULL,
         year int NOT NULL,
-        weekday int NOT NULL,
-        PRIMARY KEY(start_time)
+        weekday int NOT NULL
     );    
     """
 )
@@ -130,7 +109,7 @@ time_table_insert = (
 
 song_select = (
     """
-    SELECT song_id, artist_id FROM songs JOIN artists ON artists.artist_id = songs.artist_id WHERE title = %s AND name = %s AND duration = %s; 
+    SELECT songs.song_id, songs.artist_id FROM songs JOIN artists ON artists.artist_id = songs.artist_id WHERE songs.title = %s AND artists.name = %s AND songs.duration = %s; 
     """)
 
 # QUERY LISTS

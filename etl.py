@@ -4,19 +4,28 @@ import psycopg2
 import pandas as pd
 import json
 import datetime
+import numpy as np
 from sql_queries import *
 
 
+def get_files(filepath):
+    all_files = []
+    for root, dirs, files in os.walk(filepath):
+        files = glob.glob(os.path.join(root, '*.json'))
+        for f in files:
+            all_files.append(os.path.abspath(f))
+
+    return all_files
+
 def process_song_file(cur, filepath):
     # open song file
-    df = 
-
+    df = pd.read_json(filepath, lines=True)
     # insert song record
-    song_data = 
+    song_data = (df[['song_id', 'title', 'artist_id', 'year', 'duration']].values).tolist()
     cur.execute(song_table_insert, song_data)
     
     # insert artist record
-    artist_data = 
+    artist_data = (df[['artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude']].values).tolist()
     cur.execute(artist_table_insert, artist_data)
 
 
@@ -44,10 +53,9 @@ def process_log_file(cur, filepath):
     # insert user records
     for i, row in user_df.iterrows():
         cur.execute(user_table_insert, row)
-
     # insert songplay records
+    #songplay_column_labels = ['songplay_id', 'session_id', 'location', 'user_agent', 'start_time', 'user_id', 'artist_id']
     for index, row in df.iterrows():
-        
         # get songid and artistid from song and artist tables
         cur.execute(song_select, (row.song, row.artist, row.length))
         results = cur.fetchone()
@@ -58,7 +66,7 @@ def process_log_file(cur, filepath):
             songid, artistid = None, None
 
         # insert songplay record
-        songplay_data = 
+        songplay_data = list(zip(row, df["sessionId"], df["location"], df["userAgent"], df["ts"], results["songid"], results["artistid"]))
         cur.execute(songplay_table_insert, songplay_data)
 
 
@@ -85,8 +93,10 @@ def main():
     conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=student password=student")
     cur = conn.cursor()
 
-    process_data(cur, conn, filepath='data/song_data', func=process_song_file)
-    process_data(cur, conn, filepath='data/log_data', func=process_log_file)
+    #process_data(cur, conn, filepath='data/song_data', func=process_song_file)
+    #process_data(cur, conn, filepath='data/log_data', func=process_log_file)
+    process_data(cur, conn, filepath= r"C:\Users\ltang\Desktop\Data Engineering Nanodegree\Projects\data-modelling-with-postgresql\data\song_data", func=process_song_file)
+    process_data(cur, conn, filepath= r"C:\Users\ltang\Desktop\Data Engineering Nanodegree\Projects\data-modelling-with-postgresql\data\log_data", func=process_log_file)
 
     conn.close()
 

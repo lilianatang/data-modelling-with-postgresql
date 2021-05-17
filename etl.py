@@ -21,13 +21,18 @@ def process_song_file(cur, filepath):
     # open song file
     df = pd.read_json(filepath, lines=True)
     # insert song record
-    song_data = df[['song_id', 'title', 'year', 'duration', 'artist_id']].values[0]
-    cur.execute(song_table_insert, song_data)
-    
+    song_data = list(zip(df['song_id'], df['title'], df['year'], df['duration'], df['artist_id']))
+    #cur.execute(song_table_insert, song_data)
+    song_df = pd.DataFrame(song_data, columns=['song_id', 'title', 'year', 'duration', 'artist_id'])
+    song_df.drop_duplicates(keep="first", inplace=True)
+    for i, row in song_df.iterrows():
+        cur.execute(song_table_insert, row)
     # insert artist record
-    artist_data = df[['artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude']].values[0]
-    cur.execute(artist_table_insert, artist_data)
-
+    artist_data = list(zip(df['artist_id'], df['artist_name'], df['artist_location'], df['artist_latitude'], df['artist_longitude']))
+    artist_df = pd.DataFrame(artist_data, columns=['artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude'])
+    artist_df.drop_duplicates(keep="first", inplace=True)
+    for i, row in artist_df.iterrows():
+        cur.execute(artist_table_insert, row)
 
 def process_log_file(cur, filepath):
     # open log file
@@ -35,7 +40,7 @@ def process_log_file(cur, filepath):
     # filter by NextSong action
     df = df[df["page"] == "NextSong"]
     # convert timestamp column to datetime
-    t = pd.to_datetime(df["ts"])
+    t = pd.to_datetime(df["ts"], unit='ms')
     # insert time data records
     time_data = list(zip(df["ts"], t.dt.hour, t.dt.day, t.dt.isocalendar().week, t.dt.month, t.dt.year, t.dt.weekday))
     column_labels = ['start_time', 'hour', 'day', 'week', 'month', 'year', 'weekday']
@@ -57,16 +62,19 @@ def process_log_file(cur, filepath):
     #songplay_column_labels = ['songplay_id', 'session_id', 'location', 'user_agent', 'start_time', 'user_id', 'artist_id']
     for index, row in df.iterrows():
         # get songid and artistid from song and artist tables
+        #print(song_select)
+        #print((row.song, row.artist, row.length))
         cur.execute(song_select, (row.song, row.artist, row.length))
         results = cur.fetchone()
-        
+        print(results)
         if results:
             songid, artistid = results
         else:
             songid, artistid = None, None
-
+        print(results)
+        print(songid, artistid)
         # insert songplay record
-        songplay_data = list(zip(row, df["sessionId"], df["location"], df["userAgent"], df["ts"], results["songid"], results["artistid"]))
+        songplay_data = list(zip(row, df["sessionId"], df["location"], df["userAgent"], df["ts"], songid, artistid))
         cur.execute(songplay_table_insert, songplay_data)
 
 

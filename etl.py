@@ -74,7 +74,7 @@ def process_log_file(cur, filepath):
         print(results)
         print(songid, artistid)
         # insert songplay record
-        songplay_data = (row, df["sessionId"], df["location"], df["userAgent"], df["ts"], songid, artistid)
+        songplay_data = row, row.sessionId, row.location, row.userAgent, row.ts, songid, artistid
         cur.execute(songplay_table_insert, songplay_data)
 
 

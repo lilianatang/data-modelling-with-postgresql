@@ -21,3 +21,6 @@ from
 to
 **process_data(cur, conn, filepath= r"C:\Users\ltang\Desktop\Data Engineering Nanodegree\Projects\data-modelling-with-postgresql\data\song_data", func=process_song_file)**
 **process_data(cur, conn, filepath= r"C:\Users\ltang\Desktop\Data Engineering Nanodegree\Projects\data-modelling-with-postgresql\data\log_data", func=process_log_file**
+
+## HOW TO TEST THAT EVERYTHING WENT WELL
+1. Run the **etl.ibynb** to run various SELECT statements to see data in different tables created

@@ -7,7 +7,9 @@ import datetime
 import numpy as np
 from sql_queries import *
 
-
+# Purpose: gets all json files in a specified filepath and add each file as an element to a list
+# Parameter: filepath - the file location having json files
+# Return: all_files - a list that stores all the json filenames
 def get_files(filepath):
     all_files = []
     for root, dirs, files in os.walk(filepath):
@@ -17,12 +19,14 @@ def get_files(filepath):
 
     return all_files
 
+# Purpose: loads all the song files in JSON format, process them, and load them into appropriate columns and tables (e.g. songs and artists tables)
+# Parameter: filepath - the file location having json files
+# Return: None
 def process_song_file(cur, filepath):
     # open song file
     df = pd.read_json(filepath, lines=True)
     # insert song record
     song_data = list(zip(df['song_id'], df['title'], df['year'], df['duration'], df['artist_id']))
-    #cur.execute(song_table_insert, song_data)
     song_df = pd.DataFrame(song_data, columns=['song_id', 'title', 'year', 'duration', 'artist_id'])
     song_df.drop_duplicates(keep="first", inplace=True)
     for i, row in song_df.iterrows():
@@ -34,6 +38,9 @@ def process_song_file(cur, filepath):
     for i, row in artist_df.iterrows():
         cur.execute(artist_table_insert, row)
 
+# Purpose: loads all the log files in JSON format, process them, and load them into appropriate columns and tables (e.g. time, users, and sonplays tables)
+# Parameter: filepath - the file location having json files
+# Return: None
 def process_log_file(cur, filepath):
     # open log file
     df = pd.read_json(filepath, lines=True) #filepath format must be: r'..\file.jason'
@@ -77,7 +84,13 @@ def process_log_file(cur, filepath):
         songplay_data = row.sessionId, row.location, row.userAgent, pd.to_datetime(row.ts, unit='ms') , row.userId, artistid, songid, row.level
         cur.execute(songplay_table_insert, songplay_data)
 
-
+# Purpose: gets all json files in a specified filepath and add each file as an element to a list, then calls different functions to process and
+#          populate data from either JSON log files or JSON song files
+# Parameter: filepath - the file location having json files
+#            cur - the cursor pointing to the current connection made to the database
+#            conn - the connection to the database
+#            func - the function called to process a list of JSON files at a specific file location
+# Return: None
 def process_data(cur, conn, filepath, func):
     # get all files matching extension from directory
     all_files = []
@@ -96,15 +109,17 @@ def process_data(cur, conn, filepath, func):
         conn.commit()
         print('{}/{} files processed.'.format(i, num_files))
 
-
+# Purpose: connects to the database, process the JSON files, and populates the data into appropriate tables
+# Parameter: None
+# Return: None
 def main():
     conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=student password=student")
     cur = conn.cursor()
 
-    #process_data(cur, conn, filepath='data/song_data', func=process_song_file)
-    #process_data(cur, conn, filepath='data/log_data', func=process_log_file)
-    process_data(cur, conn, filepath= r"C:\Users\ltang\Desktop\Data Engineering Nanodegree\Projects\data-modelling-with-postgresql\data\song_data", func=process_song_file)
-    process_data(cur, conn, filepath= r"C:\Users\ltang\Desktop\Data Engineering Nanodegree\Projects\data-modelling-with-postgresql\data\log_data", func=process_log_file)
+    process_data(cur, conn, filepath='data/song_data', func=process_song_file)
+    process_data(cur, conn, filepath='data/log_data', func=process_log_file)
+    #process_data(cur, conn, filepath= r"C:\Users\ltang\Desktop\Data Engineering Nanodegree\Projects\data-modelling-with-postgresql\data\song_data", func=process_song_file)
+    #process_data(cur, conn, filepath= r"C:\Users\ltang\Desktop\Data Engineering Nanodegree\Projects\data-modelling-with-postgresql\data\log_data", func=process_log_file)
 
     conn.close()
 

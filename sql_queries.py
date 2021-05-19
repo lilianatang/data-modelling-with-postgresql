@@ -1,3 +1,6 @@
+### This file stores all the SQL commands to drop, create, and insert data into tables along with a select statement to find song_id and artist_id from
+## a given song title, artist name and song duration. This file will be called by create_tables.sql as well as etl.py
+
 # DROP TABLES
 
 songplay_table_drop = "DROP TABLE IF EXISTS songplay;"

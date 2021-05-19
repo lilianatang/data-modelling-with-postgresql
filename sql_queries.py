@@ -78,7 +78,7 @@ time_table_create = (
 
 songplay_table_insert = (
     """
-    INSERT INTO songplays (songplay_id, session_id, location, user_agent, start_time, user_id, artist_id) VALUES (%s, %s, %s, %s, %s, %s, %s);
+    INSERT INTO songplays (session_id, location, user_agent, start_time, user_id, artist_id , song_id, level) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
     """
 )
 

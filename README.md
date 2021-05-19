@@ -9,7 +9,7 @@
 
 ## HOW TO RUN THIS REPOSITORY 
 ### **In a remote server**
-1. Activate the virtual environment mypython by changing directory to **cd mypython/Scripts/** then run **activate**
+1. Activate the virtual environment mypython by running **virtualenv venv** then run **activate**
 2. Run python create_tables.py to create the database, fact and dimension tables along with insert statements to populate data through etl.py file later
 3. Run python etl.py to process data from JSON files and populate corresponding data to tables in the database
 ### **Locally**
@@ -21,6 +21,6 @@ from
 to
 **process_data(cur, conn, filepath= r"C:\Users\ltang\Desktop\Data Engineering Nanodegree\Projects\data-modelling-with-postgresql\data\song_data", func=process_song_file)**
 **process_data(cur, conn, filepath= r"C:\Users\ltang\Desktop\Data Engineering Nanodegree\Projects\data-modelling-with-postgresql\data\log_data", func=process_log_file**
-
+Run steps 1 - 3 as similar to how you would in a remote server
 ## HOW TO TEST THAT EVERYTHING WENT WELL
 1. Run the **etl.ibynb** to run various SELECT statements to see data in different tables created

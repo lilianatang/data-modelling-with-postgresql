@@ -1,3 +1,5 @@
+# OTHER DATA ENGINEERING WORK FOR SPARKIFY
+### [Data Modelling for NoSQL database with Apache Cassandra](https://github.com/lilianatang/data-modelling-with-apache-cassandra)
 # INTRODUCTION
 ### Purpose of the project:
 This project is to create a database schema in Postgres & ETL pipeline to optimize queries on song play analysis. 

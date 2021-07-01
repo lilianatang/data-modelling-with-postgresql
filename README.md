@@ -1,8 +1,8 @@
 # OTHER DATA ENGINEERING WORK FOR SPARKIFY
-### [Data Modelling for NoSQL database with Apache Cassandra](https://github.com/lilianatang/data-modelling-with-apache-cassandra)
-### [Building a Cloud Data Warehouse in AWS Redshift & S3] (https://github.com/lilianatang/building-aws-cloud-data-warehouse)
-### [Building a Cloud Data Lake in AWS with Spark] (https://github.com/lilianatang/building-aws-data-lake)
-### [Building an Automated Data Pipeline with Apache Airflow] (https://github.com/lilianatang/automating-data-pipeline-with-airflow)
+#### [Data Modelling for NoSQL database with Apache Cassandra](https://github.com/lilianatang/data-modelling-with-apache-cassandra)
+#### [Building a Cloud Data Warehouse in AWS Redshift & S3](https://github.com/lilianatang/building-aws-cloud-data-warehouse)
+#### [Building a Cloud Data Lake in AWS with Spark](https://github.com/lilianatang/building-aws-data-lake)
+#### [Building an Automated Data Pipeline with Apache Airflow](https://github.com/lilianatang/automating-data-pipeline-with-airflow)
 # INTRODUCTION
 ### Purpose of the project:
 This project is to create a database schema in Postgres & ETL pipeline to optimize queries on song play analysis. 
